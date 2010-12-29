@@ -66,4 +66,8 @@
 	[self setNeedsDisplayInRect: [self visibleRect]];
 }
 
+-(PXListViewDropHighlight) dropHighlight {
+	return _dropHighlight;
+}
+
 @end
