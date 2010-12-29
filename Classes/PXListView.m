@@ -516,7 +516,7 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 	}
 	
 	#if DEBUG
-	PXLog(@"No of cells in view hierarchy: %d", [_visibleCells count]);
+	PXLog(@"No of cells in view hierarchy: %lu", [_visibleCells count]);
 	#endif
 	
 	_currentRange = visibleRange;
@@ -990,7 +990,7 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 		{
 			idx++;
 			*outDropHighlight = PXListViewDropAbove;
-			PXLog( @"*** ABOVE %ld (below %d)", idx, idx -1 );
+			PXLog( @"*** ABOVE %lu (below %lu)", idx, idx -1 );
 		}
 		else
 			PXLog( @"*** ON %ld", idx );
@@ -1002,7 +1002,7 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 	}
 	else
 	{
-		PXLog( @"*** ON %d", NSUIntegerMax );
+		PXLog( @"*** ON %lu", NSUIntegerMax );
 		return NSUIntegerMax;
 	}
 }

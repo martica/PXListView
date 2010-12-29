@@ -24,7 +24,7 @@
 	} else {
 		count--;
 	}
-	NSLog(@"Current amount of allocated cells: %d", count);
+	NSLog(@"Current amount of allocated cells: %ld", count);
 }
 #endif
 
