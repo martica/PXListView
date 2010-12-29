@@ -185,6 +185,24 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 		
 		[self layoutCells];
 	}
+	
+	if (_numberOfRows == 0) {
+		[_selectedRows removeAllIndexes];
+	} 
+	
+	if (_numberOfRows > 0 && !_allowsEmptySelection) {
+		if([_selectedRows isEqualToIndexSet:[NSIndexSet indexSet]]) {
+			[self selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
+		} else if ([_selectedRows indexGreaterThanOrEqualToIndex:0] >= _numberOfRows) {
+			[self setSelectedRow:_numberOfRows-1];
+		}
+	} 
+	
+	NSUInteger invalidIndex = [_selectedRows indexGreaterThanOrEqualToIndex:_numberOfRows];
+	while (invalidIndex != NSNotFound) {
+		[_selectedRows removeIndex:invalidIndex];
+		invalidIndex = [_selectedRows indexGreaterThanOrEqualToIndex:_numberOfRows];
+	}
 }
 
 
@@ -220,6 +238,10 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 
 - (void)selectRowIndexes:(NSIndexSet*)rows byExtendingSelection:(BOOL)shouldExtend
 {
+	if ([rows isEqualToIndexSet:_selectedRows]) {
+		return; //No change!
+	}
+	
 	if(!shouldExtend) {
 		[self deselectRowIndexes: _selectedRows];	// +++ Optimize. Could intersect sets and only deselect what's needed.
 	}
@@ -248,7 +270,7 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 
 - (void)deselectRows
 {
-	[self deselectRowIndexes: _selectedRows];
+	[self setSelectedRows:[NSIndexSet indexSet]];
 }
 
 
