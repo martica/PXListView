@@ -93,6 +93,8 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 	{
 		_reusableCells = [[NSMutableArray alloc] init];
 		_visibleCells = [[NSMutableArray alloc] init];
+		_reusableViewControllers = [[NSMutableArray alloc] init];
+		_visibleViewControllers = [[NSMutableArray alloc] init];
 		_selectedRows = [[NSMutableIndexSet alloc] init];
 		_allowsEmptySelection = YES;
 	}
@@ -106,6 +108,8 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 	{
 		_reusableCells = [[NSMutableArray alloc] init];
 		_visibleCells = [[NSMutableArray alloc] init];
+		_reusableViewControllers = [[NSMutableArray alloc] init];
+		_visibleViewControllers = [[NSMutableArray alloc] init];
 		_selectedRows = [[NSMutableIndexSet alloc] init];
 		_allowsEmptySelection = YES;
 	}
@@ -165,6 +169,7 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 	}
 	
 	[_visibleCells removeAllObjects];
+	[_visibleViewControllers removeAllObjects];
 	free(_cellYOffsets);
 	
 	//[_selectedRows removeAllIndexes];
@@ -418,7 +423,7 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 				viewController = (NSViewController*)[NSNull null];
 			}
 			[_visibleCells addObject: cell];
-			[_visibleViewControllers addObject: cell];
+			[_visibleViewControllers addObject: viewController];
 			
 			[self addNewVisibleCell: cell atRow: i];
 		}
@@ -818,6 +823,8 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 	
 	if(!_inLiveResize)
 	{
+		[_reusableCells addObjectsFromArray: _visibleCells];
+		[_reusableViewControllers addObjectsFromArray: _visibleViewControllers];
 		[_visibleCells removeAllObjects];
 		[_visibleViewControllers removeAllObjects];
 		[[self documentView] setSubviews: [NSArray array]];
@@ -1188,6 +1195,8 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 	[super viewDidEndLiveResize];
 	
 	// Change the layout of the cells:
+	[_reusableCells addObjectsFromArray: _visibleCells];
+	[_reusableViewControllers addObjectsFromArray: _visibleViewControllers];
 	[_visibleCells removeAllObjects];
 	[_visibleViewControllers removeAllObjects];
 	[[self documentView] setSubviews:[NSArray array]];
