@@ -965,8 +965,9 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 			cellOffset = _cellYOffsets[idx];
 			nextCellOffset = _cellYOffsets[idx+1];
 			cellHeight = nextCellOffset -cellOffset;
-			if( cellHeight < 0 )
-				PXLog( @"Urk. (1)" );
+			if( cellHeight < 0 ) {
+				PXLog( @"Urk. (1)" );				
+			}
 		}
 		else if( idx < _numberOfRows && _numberOfRows > 0 )	// drag is somewhere close to or beyond end of list.
 		{
@@ -974,8 +975,9 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 			cellHeight = [theCell frame].size.height;
 			cellOffset = [theCell frame].origin.y;
 			nextCellOffset = cellOffset +cellHeight;
-			if( cellHeight < 0 )
-				PXLog( @"Urk. (2)" );
+			if( cellHeight < 0 ) {
+				PXLog( @"Urk. (2)" );				
+			}
 		}
 		else if( idx >= _numberOfRows && _numberOfRows > 0 )	// drag is somewhere close to or beyond end of list.
 		{
@@ -983,8 +985,9 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 			cellOffset = [[self documentView] frame].size.height;
 			nextCellOffset = cellOffset;
 			idx = NSUIntegerMax;
-			if( cellHeight < 0 )
+			if( cellHeight < 0 ) {
 				PXLog( @"Urk. (3)" );
+			}
 		}
 
 		PXLog( @"cellHeight = %f", cellHeight );
