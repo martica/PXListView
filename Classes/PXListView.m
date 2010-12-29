@@ -275,16 +275,16 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 	// Tom: Somehow i was getting <0 here, because i>=0 is always true for unsigned integers. Temporarily made this an integer.
 	// Tom: This was only a bug for lists using multiple identifiers for its cells.
 	// Tom: NSInteger shouldn't be a problem here - nobody will have more than 2.1 billion active cells.
-	for(NSInteger i = [_reusableCells count]-1; i>=0;i--)
+	for(NSInteger i = (NSInteger)[_reusableCells count]-1; i>=0;i--)
 	{
-		PXListViewCell *cell = [_reusableCells objectAtIndex: i];
+		PXListViewCell *cell = [_reusableCells objectAtIndex: (NSUInteger)i];
 		
 		if( [[cell reusableIdentifier] isEqualToString: identifier] )
 		{
 			// Make sure it doesn't get dealloc'd early:
 			[[cell retain] autorelease];            
-			[_reusableCells removeObjectAtIndex: i];
-			[_reusableViewControllers removeObjectAtIndex: i];
+			[_reusableCells removeObjectAtIndex: (NSUInteger)i];
+			[_reusableViewControllers removeObjectAtIndex: (NSUInteger)i];
 			[cell prepareForReuse];
 			
 			return cell;
@@ -306,17 +306,17 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 	// Tom: Somehow i was getting <0 here, because i>=0 is always true for unsigned integers. Temporarily made this an integer.
 	// Tom: This was only a bug for lists using multiple identifiers for its cells.
 	// Tom: NSInteger shouldn't be a problem here - nobody will have more than 2.1 billion active cells.
-	for(NSInteger i = [_reusableViewControllers count] -1; i >= 0; i--)
+	for(NSInteger i = (NSInteger)[_reusableViewControllers count] -1; i >= 0; i--)
 	{
-		PXListViewCell		*cell = [_reusableCells objectAtIndex: i];
-		NSViewController	*viewController = [_reusableViewControllers objectAtIndex: i];
+		PXListViewCell		*cell = [_reusableCells objectAtIndex: (NSUInteger)i];
+		NSViewController	*viewController = [_reusableViewControllers objectAtIndex: (NSUInteger)i];
 		
 		if( [[cell reusableIdentifier] isEqualToString: identifier] )
 		{
 			// Make sure it doesn't get dealloc'd early:
 			[[viewController retain] autorelease];            
-			[_reusableCells removeObjectAtIndex: i];
-			[_reusableViewControllers removeObjectAtIndex: i];
+			[_reusableCells removeObjectAtIndex: (NSUInteger)i];
+			[_reusableViewControllers removeObjectAtIndex: (NSUInteger)i];
 			[cell prepareForReuse];
 			if( [viewController respondsToSelector: @selector(prepareForReuse)] )
 				[(id)viewController prepareForReuse];
@@ -487,7 +487,7 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 		{
 			for( NSUInteger i = NSMaxRange(_currentRange); i < NSMaxRange(visibleRange); i++ )
 			{
-				NSInteger			newRow = i;
+				NSUInteger			newRow = i;
 				PXListViewCell		*cell = nil;
 				NSViewController	*viewController = nil;
 				if( [[self delegate] respondsToSelector: @selector(listView:viewControllerForRow:)] )
@@ -793,7 +793,7 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 	//Set the frames of the cells
 	for(id cell in _visibleCells)
 	{
-		NSInteger row = [cell row];
+		NSUInteger row = [cell row];
 		[cell setFrame:[self rectOfRow:row]];
 	}
 	
@@ -806,7 +806,7 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 
 - (void)layoutCell:(PXListViewCell*)cell
 {
-	NSInteger row = [cell row];
+	NSUInteger row = [cell row];
 	[cell setFrame:[self rectOfRow:row]];
 }
 
