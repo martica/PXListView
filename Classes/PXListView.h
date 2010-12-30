@@ -28,7 +28,7 @@
 	NSRange				_currentRange;
 	
 	NSUInteger			_numberOfRows;
-	NSMutableIndexSet	*_selectedRows;
+	NSIndexSet			*_selectedRows;
 	
 	NSRange				_visibleRange;
 	CGFloat				_totalHeight;
