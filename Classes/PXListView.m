@@ -670,12 +670,18 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 
 -(BOOL)	becomeFirstResponder
 {
+	for( PXListViewCell *cell in _visibleCells ) {
+		[cell setNeedsDisplayInRect:[cell bounds]];
+	}
 	return YES;
 }
 
 
 -(BOOL)	resignFirstResponder
 {
+	for( PXListViewCell *cell in _visibleCells ) {
+		[cell setNeedsDisplayInRect:[cell bounds]];
+	}
 	return YES;
 }
 
