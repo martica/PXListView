@@ -95,7 +95,7 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 		_visibleCells = [[NSMutableArray alloc] init];
 		_reusableViewControllers = [[NSMutableArray alloc] init];
 		_visibleViewControllers = [[NSMutableArray alloc] init];
-		_selectedRows = [[NSMutableIndexSet alloc] init];
+		_selectedRows = [[NSIndexSet alloc] init];
 		_allowsEmptySelection = YES;
 	}
 	
@@ -110,7 +110,7 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 		_visibleCells = [[NSMutableArray alloc] init];
 		_reusableViewControllers = [[NSMutableArray alloc] init];
 		_visibleViewControllers = [[NSMutableArray alloc] init];
-		_selectedRows = [[NSMutableIndexSet alloc] init];
+		_selectedRows = [[NSIndexSet alloc] init];
 		_allowsEmptySelection = YES;
 	}
 	
@@ -185,24 +185,6 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 		
 		[self layoutCells];
 	}
-	
-	if (_numberOfRows == 0) {
-		[_selectedRows removeAllIndexes];
-	} 
-	
-	if (_numberOfRows > 0 && !_allowsEmptySelection) {
-		if([_selectedRows isEqualToIndexSet:[NSIndexSet indexSet]]) {
-			[self selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
-		} else if ([_selectedRows indexGreaterThanOrEqualToIndex:0] >= _numberOfRows) {
-			[self setSelectedRow:_numberOfRows-1];
-		}
-	} 
-	
-	NSUInteger invalidIndex = [_selectedRows indexGreaterThanOrEqualToIndex:_numberOfRows];
-	while (invalidIndex != NSNotFound) {
-		[_selectedRows removeIndex:invalidIndex];
-		invalidIndex = [_selectedRows indexGreaterThanOrEqualToIndex:_numberOfRows];
-	}
 }
 
 
@@ -238,33 +220,48 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 
 - (void)selectRowIndexes:(NSIndexSet*)rows byExtendingSelection:(BOOL)shouldExtend
 {
-	if ([rows isEqualToIndexSet:_selectedRows]) {
+	NSMutableIndexSet *removedIndexes = [NSMutableIndexSet indexSet]; 
+	NSMutableIndexSet *addedIndexes;
+	NSMutableIndexSet *newIndexes = [[_selectedRows mutableCopy] autorelease];
+
+	if (!shouldExtend) {
+		removedIndexes = [[_selectedRows mutableCopy] autorelease];
+		[removedIndexes removeIndexes:rows];
+		[newIndexes removeIndexes:removedIndexes];
+	}
+	addedIndexes = [[rows mutableCopy] autorelease];
+	[addedIndexes removeIndexes:_selectedRows];
+	[newIndexes addIndexes:addedIndexes];
+	
+	if ([removedIndexes count] == 0 && [addedIndexes count] == 0) {
 		return; //No change!
 	}
 	
-	if(!shouldExtend) {
-		[self deselectRowIndexes: _selectedRows];	// +++ Optimize. Could intersect sets and only deselect what's needed.
-	}
+	[self willChangeValueForKey:@"selectedRows"];
+	[self willChangeValueForKey:@"selectedRow"];
+	[_selectedRows autorelease];
+	_selectedRows = [[NSIndexSet alloc] initWithIndexSet:newIndexes];
+	[self didChangeValueForKey:@"selectedRow"];
+	[self didChangeValueForKey:@"selectedRows"];
 	
-	[_selectedRows addIndexes:rows];	// _selectedRows is empty if !doExtend, because we just deselected all.
-
-	NSArray *newSelectedCells = [self visibleCellsForRowIndexes:rows];
+	NSArray *newSelectedCells = [self visibleCellsForRowIndexes:addedIndexes];
 	for(PXListViewCell *newSelectedCell in newSelectedCells)
 	{
 		[newSelectedCell setNeedsDisplay: YES];
+	}
+	NSArray *oldSelectedCells = [self visibleCellsForRowIndexes:removedIndexes];	
+	for( PXListViewCell *oldSelectedCell in oldSelectedCells )
+	{
+		[oldSelectedCell setNeedsDisplay: YES];
 	}
 }
 
 
 - (void)deselectRowIndexes:(NSIndexSet*)rows
 {
-	NSArray *oldSelectedCells = [self visibleCellsForRowIndexes:rows];
-	[_selectedRows removeIndexes:rows];
-	
-	for( PXListViewCell *oldSelectedCell in oldSelectedCells )
-	{
-		[oldSelectedCell setNeedsDisplay: YES];
-	}
+	NSMutableIndexSet *newIndexes = [[_selectedRows mutableCopy] autorelease];
+	[newIndexes removeIndexes:rows];
+	[self selectRowIndexes:newIndexes byExtendingSelection:NO];
 }
 
 
