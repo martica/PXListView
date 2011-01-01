@@ -82,6 +82,7 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 @synthesize cellSpacing = _cellSpacing;
 @synthesize allowsMultipleSelection = _allowsMultipleSelection;
 @synthesize allowsEmptySelection = _allowsEmptySelection;
+@synthesize allowsLiveResize = _allowsLiveResize;
 @synthesize verticalMotionCanBeginDrag = _verticalMotionCanBeginDrag;
 
 #pragma mark -
@@ -451,8 +452,8 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 
 - (void)updateCells
 {	
-	//Resizing all the cells in live resize is computationally pretty expensive; however make this a property?
-	if(_inLiveResize) {
+	//Resizing all the cells in live resize is computationally pretty expensive
+	if(_inLiveResize && !_allowsLiveResize) {
 		return;
 	}
 	
@@ -846,7 +847,7 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 	//message to resize the visible cells
 	[super resizeWithOldSuperviewSize:oldBoundsSize];
 	
-	if(!_inLiveResize)
+	if(!_inLiveResize || _allowsLiveResize)
 	{
 		[_reusableCells addObjectsFromArray: _visibleCells];
 		[_reusableViewControllers addObjectsFromArray: _visibleViewControllers];

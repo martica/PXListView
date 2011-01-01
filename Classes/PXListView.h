@@ -37,6 +37,7 @@
 	CGFloat				_cellSpacing;
 	
 	BOOL				_inLiveResize;
+	BOOL				_allowsLiveResize;
 	BOOL				_allowsEmptySelection;
 	BOOL				_allowsMultipleSelection;
 	BOOL				_verticalMotionCanBeginDrag;
@@ -51,6 +52,7 @@
 @property (readwrite, assign) NSUInteger						selectedRow;	// shorthand for selectedRows.
 @property (readwrite, assign) BOOL								allowsEmptySelection;
 @property (readwrite, assign) BOOL								allowsMultipleSelection;
+@property (readwrite, assign) BOOL								allowsLiveResize;
 @property (readwrite, assign) BOOL								verticalMotionCanBeginDrag;
 
 - (void)			reloadData;
