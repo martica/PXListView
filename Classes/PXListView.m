@@ -177,6 +177,8 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 	if([delegate conformsToProtocol:@protocol(PXListViewDelegate)])
 	{
 		_numberOfRows = [delegate numberOfRowsInListView:self];
+		//Allocate the offset caching array
+		_cellYOffsets = (CGFloat*)malloc(sizeof(CGFloat)*_numberOfRows);
 		[self cacheCellLayout];
 		
 		NSRange visibleRange = [self visibleRange];
@@ -791,10 +793,7 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 	if([delegate conformsToProtocol:@protocol(PXListViewDelegate)])
 	{
 		CGFloat totalHeight = 0;
-		
-		//Allocate the offset caching array
-		_cellYOffsets = (CGFloat*)malloc(sizeof(CGFloat)*_numberOfRows);
-		
+				
 		for( NSUInteger i = 0; i < _numberOfRows; i++ )
 		{
 			_cellYOffsets[i] = totalHeight;
