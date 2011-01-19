@@ -284,7 +284,7 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 	[_reusableCells addObject: cell];
 	[_reusableViewControllers addObject: viewController];
 	[_visibleCells removeObject: cell];
-	[_visibleViewControllers removeObject: viewController];
+	[_visibleViewControllers removeObjectAtIndex:[_visibleViewControllers indexOfObject:viewController]];
 	[cell setHidden: YES];
 }
 
