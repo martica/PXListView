@@ -591,8 +591,12 @@ static PXIsDragStartResult	PXIsDragStart( NSEvent *startEvent, NSTimeInterval th
 	NSIndexSet	*clickedIndexSet = [NSIndexSet indexSetWithIndex: [theCell row]];
 	
 	// If a cell is already selected, we can drag it out, in which case we shouldn't toggle it:
-	if( theEvent and isSelected and [self attemptDragWithMouseDown: theEvent inCell: theCell] )
-		return;
+	if( theEvent and isSelected ) {
+		if ([self attemptDragWithMouseDown: theEvent inCell: theCell]) {
+			return;
+		}
+		tryDraggingAgain = NO; // We can't call attemptDrawWithMouseDown twice on the same mouse down.
+	}
 	
 	if( _allowsMultipleSelection )
 	{
